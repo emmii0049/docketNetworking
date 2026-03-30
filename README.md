@@ -19,6 +19,8 @@ In this lab, you will:
    **Code → Codespaces → Create codespace**
 3. Wait for the environment to start.
 
+> **Note:** The Codespace now uses a lighter base image for faster startup. Only essential tools and extensions are pre-installed for this lab.
+
 ---
 
 ## Step 1: Verify Docker
