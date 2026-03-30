@@ -1,3 +1,37 @@
+# -----------------------------
+# 0. Get GitHub username (if in Codespaces)
+# -----------------------------
+
+GITHUB_USER="unknown"
+if [ -n "${CODESPACE_NAME:-}" ]; then
+  GITHUB_USER="$(echo "$CODESPACE_NAME" | cut -d'-' -f1)"
+elif [ -n "${USER:-}" ]; then
+  GITHUB_USER="$USER"
+fi
+
+# -----------------------------
+# 1. Check Docker is working
+# -----------------------------
+# 1a. Check custom bridge network exists
+# -----------------------------
+
+if docker network ls | grep -q "csf-net"; then
+  check_pass "Custom bridge network 'csf-net' exists"
+else
+  check_fail "Custom bridge network 'csf-net' missing"
+fi
+
+# -----------------------------
+# 1b. Check containers are on csf-net
+# -----------------------------
+
+ON_NET1=$(docker inspect -f '{{range $k,$v := .NetworkSettings.Networks}}{{if eq $k "csf-net"}}yes{{end}}{{end}}' csf-ubuntu1 2>/dev/null)
+ON_NET2=$(docker inspect -f '{{range $k,$v := .NetworkSettings.Networks}}{{if eq $k "csf-net"}}yes{{end}}{{end}}' csf-ubuntu2 2>/dev/null)
+if [ "$ON_NET1" = "yes" ] && [ "$ON_NET2" = "yes" ]; then
+  check_pass "Both containers are attached to 'csf-net'"
+else
+  check_fail "Containers are not both on 'csf-net'"
+fi
 
 #!/bin/bash
 set -euo pipefail
@@ -117,6 +151,7 @@ fi
 
 # -----------------------------
 
+
 # Summary
 echo "----------------------------------"
 echo -e "\033[1m🎯 RESULTS:\033[0m"
@@ -128,3 +163,16 @@ if [ "$FAIL_COUNT" -eq 0 ]; then
 else
   echo -e "\033[1;33m⚠️ Some checks failed. Review your steps.\033[0m"
 fi
+
+# Write marksheet
+MARKSHEET=marksheet.md
+{
+  echo "# Lab Marksheet"
+  echo "- **GitHub Username:** $GITHUB_USER"
+  echo "- **Passed:** $PASS_COUNT"
+  echo "- **Failed:** $FAIL_COUNT"
+  echo ""
+  echo "## Check Results"
+  grep -E "PASS:|FAIL:" "$0" | sed 's/^/    /'
+} > "$MARKSHEET"
+echo "Marksheet written to $MARKSHEET"

@@ -41,23 +41,35 @@ docker images
 
 ---
 
-## Step 3: Run the First Container
+## Step 3: Create a Custom Bridge Network
 
 ```bash
-docker run -it -d --name csf-ubuntu1 ubuntu:focal
+docker network create --driver bridge csf-net
+docker network ls
+```
+
+**Why?**
+> A user-defined bridge network (csf-net) allows containers to communicate securely and predictably. Unlike the default bridge, it provides better network isolation and lets you control which containers can talk to each other. This is important for container security, as it limits exposure and enables network segmentation—key principles in secure container deployments.
+
+---
+
+## Step 4: Run the First Container (on the custom network)
+
+```bash
+docker run -it -d --name csf-ubuntu1 --network csf-net ubuntu:focal
 ```
 
 ---
 
-## Step 4: Run the Second Container
+## Step 5: Run the Second Container (on the custom network)
 
 ```bash
-docker run -it -d --name csf-ubuntu2 ubuntu:focal
+docker run -it -d --name csf-ubuntu2 --network csf-net ubuntu:focal
 ```
 
 ---
 
-## Step 5: Get Container IP Address
+## Step 6: Get Container IP Address
 
 ```bash
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' csf-ubuntu1
@@ -66,7 +78,7 @@ Save this IP address for later use.
 
 ---
 
-## Step 6: Access the Second Container’s Shell
+## Step 7: Access the Second Container’s Shell
 
 ```bash
 docker exec -it csf-ubuntu2 /bin/bash
@@ -74,7 +86,7 @@ docker exec -it csf-ubuntu2 /bin/bash
 
 ---
 
-## Step 7: Update Packages
+## Step 8: Update Packages
 
 ```bash
 apt-get update
@@ -82,7 +94,7 @@ apt-get update
 
 ---
 
-## Step 8: Install Ping
+## Step 9: Install Ping
 
 ```bash
 apt-get install iputils-ping -y
@@ -90,7 +102,7 @@ apt-get install iputils-ping -y
 
 ---
 
-## Step 9: Test Connectivity
+## Step 10: Test Connectivity
 
 ```bash
 ping <IP_ADDRESS>
@@ -104,7 +116,7 @@ exit
 
 ---
 
-## Step 10: Run the Nginx Web Server
+## Step 11: Run the Nginx Web Server
 
 ```bash
 docker run -d -p 8080:80 --name csf-nginx nginx:latest
@@ -112,8 +124,18 @@ docker run -d -p 8080:80 --name csf-nginx nginx:latest
 
 ---
 
-## Step 11: Access the Web Server
+## Step 12: Access the Web Server
 
 - Go to the Ports tab in Codespaces.
 - Open port 8080.
 - You should see: "Welcome to nginx!"
+
+---
+
+## Step 13: Check Your Work and Get Your Marksheet
+
+Run the check script:
+```bash
+bash check.sh
+```
+This will generate a `marksheet.md` file with your GitHub username and a summary of your lab checks. Your instructor will use this for grading.
