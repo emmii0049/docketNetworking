@@ -19,7 +19,7 @@ In this lab, you will:
    **Code → Codespaces → Create codespace**
 3. Wait for the environment to start.
 
-> **Note:** The Codespace now uses a lighter base image for faster startup. Only essential tools and extensions are pre-installed for this lab.
+> **Note:** Docker is not pre-installed in this Codespace. If you need Docker, install it manually using the official instructions for Ubuntu 22.04, or use Codespaces' built-in Docker support if available. The automated check script will skip Docker checks if Docker is not installed.
 
 ---
 

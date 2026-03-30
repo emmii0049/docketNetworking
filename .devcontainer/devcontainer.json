@@ -2,12 +2,7 @@
   "name": "Container Network Security Lab",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
 
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest",
-      "moby": true
-    }
-  },
+
 
   "customizations": {
     "vscode": {
@@ -18,7 +13,7 @@
     }
   },
 
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y iputils-ping curl wget && docker pull ubuntu:focal && docker pull nginx:latest",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y iputils-ping curl wget",
   "postStartCommand": "docker info && bash /workspaces/docketNetworking/check.sh",
 
   "remoteUser": "codespace",
